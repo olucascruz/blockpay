@@ -31,7 +31,6 @@
   nome: string,
   email: string,
   senha: string,
-  dataCadastro: string,
   peer: string
 }
 ```
