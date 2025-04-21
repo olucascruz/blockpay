@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from pydantic import BaseModel
 import hashlib
@@ -5,8 +6,24 @@ import time
 from typing import List
 import json
 import os
+import socket
+import uvicorn
+import requests
 
-app = FastAPI(title="API de Blockchain para Registro de Pagamentos")
+
+PORT = 8000
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Start app
+    ip = get_local_ip()
+    server_with_port = f"http://{ip}:{PORT}"
+    response = requests.post("http://127.0.0.1:8001/ip", json={"ip":server_with_port})
+    print(response.content)
+    yield
+    # Finish app
+    
+app = FastAPI(lifespan=lifespan, title="API de Blockchain para Registro de Pagamentos")
 
 # Classe para o Bloco
 class Block:
@@ -105,6 +122,10 @@ class Pagamento(BaseModel):
     preco: float
     pagante: str
 
+
+
+
+
 # Rota de registro
 @app.post("/registrar_pagamento")
 def registrar_pagamento(pagamento: Pagamento):
@@ -130,3 +151,16 @@ def buscar_pagamentos(pagante: str):
                 "hash": block.hash
             })
     return {"pagamentos_do_pagante": resultados}
+
+def get_local_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect(('8.8.8.8', 80))
+        ip = s.getsockname()[0]
+    finally:
+        s.close()
+    return ip
+
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=PORT)
