@@ -7,7 +7,7 @@ __pycache__/
 *.so
 
 blockchain.json
-
+ips.json
 # Distribution / packaging
 .Python
 build/
