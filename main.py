@@ -9,7 +9,8 @@ import os
 import socket
 import uvicorn
 import requests
-
+from fastapi import Body
+from typing import Any
 
 PORT = 8000
 
@@ -59,15 +60,27 @@ class Blockchain:
         genesis.mine_block(self.difficulty)
         self.chain.append(genesis)
 
+    def insert_block(self, new_block):
+        self.chain.append(new_block)
+        self.save_to_file()
+
     def get_last_block(self) -> Block:
         return self.chain[-1]
 
-    def add_block(self, data: dict):
+    def create_block(self, data: dict):
         last_block = self.get_last_block()
         new_block = Block(len(self.chain), time.time(), data, last_block.hash)
         new_block.mine_block(self.difficulty)
-        self.chain.append(new_block)
-        self.save_to_file()
+        return new_block
+    
+    def get_data(self):
+        return {
+            "index": self.index,
+            "timestamp": self.timestamp,
+            "data": self.data,
+            "hash": self.hash,
+            "previous_hash": self.previous_hash
+        }
 
     def get_all_data(self):
         return [
@@ -124,14 +137,34 @@ class Pagamento(BaseModel):
 
 
 
-
-
 # Rota de registro
 @app.post("/registrar_pagamento")
 def registrar_pagamento(pagamento: Pagamento):
-    blockchain.add_block(pagamento.dict())
+    new_block = blockchain.create_block_block(pagamento.dict())
+    blockchain.insert_block(new_block)
+    response = requests.get("http://127.0.0.1:8001/ip")
+    list_ips = response.json()["ips"]
+    for ip in list_ips:
+        if get_local_ip() not in ip:
+            try:
+                response = requests.get(f"{ip}/atualizar_pagamento")
+            except Exception as ex:
+                print(ex)
     return {"mensagem": "Pagamento registrado com sucesso!"}
 
+
+class BlockModel(BaseModel):
+    index: int
+    timestamp: str
+    data: dict
+    hash: str
+    previous_hash: str
+
+@app.post("/atualizar_pagamento")
+def atualizar_pagamento(new_block: BlockModel):
+      new_block = Block(**new_block.model_dump())
+      blockchain.insert_block(new_block)
+      return {"mensagem": "Pagamento registrado com sucesso!"}
 # Rota para listar
 @app.get("/listar_pagamentos")
 def listar_pagamentos():
@@ -160,6 +193,13 @@ def get_local_ip():
     finally:
         s.close()
     return ip
+
+
+
+@app.get("/hello")
+def hello():
+    return {"hello":"hello"}     
+
 
 
 if __name__ == "__main__":
