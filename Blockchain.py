@@ -89,3 +89,4 @@ class Blockchain:
             new_chain.append(block)
 
         self.chain = new_chain
+        self.save_to_file()
