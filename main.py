@@ -12,7 +12,7 @@ from Block import Block
 PORT = 8000
 from Blockchain import Blockchain
 
-SERVER_AUX = "http://127.0.0.1:8001"
+SERVER_AUX = "http://192.168.1.10:8001"
 # Inicializa a blockchain
 blockchain = Blockchain()
 
@@ -27,7 +27,8 @@ async def lifespan(app: FastAPI):
     list_ips = response.json()["ips"]
 
     chain = sync_from_random_peer(list_ips)
-    blockchain.import_chain(chain)
+    if chain != None:
+        blockchain.import_chain(chain)
     yield
     # Finish app
     
@@ -87,6 +88,11 @@ def buscar_pagamentos(pagante: str):
                 "hash": block.hash
             })
     return {"pagamentos_do_pagante": resultados}
+
+
+@app.get("/export")
+def export_blockchain_data():
+    return blockchain.get_all_data()
 
 def get_local_ip():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

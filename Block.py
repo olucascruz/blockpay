@@ -2,12 +2,12 @@ import hashlib
 
 # Classe para o Bloco
 class Block:
-    def __init__(self, index: int, timestamp: float, data: dict, previous_hash: str, hash:str=None):
+    def __init__(self, index: int, timestamp: float, data: dict, previous_hash: str, hash:str=None, nonce:int=0):
         self.index = index
         self.timestamp = timestamp
         self.data = data
         self.previous_hash = previous_hash
-        self.nonce = 0
+        self.nonce = nonce
         if hash != None:
             self.hash = hash
         else:
@@ -30,5 +30,6 @@ class Block:
             "timestamp": self.timestamp,
             "data": self.data,
             "hash": self.hash,
-            "previous_hash": self.previous_hash
+            "previous_hash": self.previous_hash,
+            "nonce": self.nonce
         }
