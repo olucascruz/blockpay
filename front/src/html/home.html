@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>BlockPay - Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/home.css">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="dashboard-container">
+    <script type="module">
+      import { verificarAutenticacao } from "../js/authentication.js";
+      verificarAutenticacao();
+    </script>
+
+    <header class="p-3 bg-dark text-white">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h2>Bem-vindo, <span id="nome-usuario"></span>!</h2>
+          <p>Email: <span id="email-usuario"></span></p>
+        </div>
+        <div>
+          <button class="btn btn-outline-light me-2" id="btn-transactions">Minhas Transações</button>
+          <button class="btn btn-outline-danger" id="btn-logout">Sair</button>
+        </div>
+      </div>
+    </header>
+
+    <section id="grupo-usuario" class="p-3 bg-secondary text-white">
+      <h2>Informações do Grupo</h2>
+      <p id="info-grupo">Carregando informações do grupo...</p>
+      <div id="grupo-actions" style="display: none;">
+        <button class="btn btn-primary me-2" id="btn-criar-grupo">Criar Grupo</button>
+        <button class="btn btn-primary" id="btn-entrar-grupo">Entrar em Grupo</button>
+      </div>
+      <button class="btn btn-info mt-2" id="btn-ver-transacoes-grupo" style="display: none;">Ver Transações do Grupo</button>
+    </section>
+
+    <div id="popup-entrar-grupo" class="rounded shadow-lg p-4 bg-white position-fixed" style="display: none; top: 20%; left: 35%;">
+      <h3>Entrar em Grupo</h3>
+      <label for="input-id-grupo">ID do Grupo:</label>
+      <input class="form-control my-2" type="text" id="input-id-grupo" />
+      <button class="btn btn-success me-2" id="confirmar-entrada">Entrar</button>
+      <button class="btn btn-secondary" id="cancelar-popup">Cancelar</button>
+    </div>
+
+    <section id="graficos" class="container-fluid">
+      <div class="grafico-card">
+        <h3>Distribuição por categoria</h3>
+        <canvas id="pizzaChart"></canvas>
+      </div>
+
+      <div class="grafico-card">
+        <h3>Evolução das despesas</h3>
+        <canvas id="linhaChart"></canvas>
+      </div>
+
+      <div class="grafico-card">
+        <h3>Comparativo entre categorias</h3>
+        <canvas id="barraChart"></canvas>
+      </div>
+
+      <div id="info-extra">
+        <h3>Resumo</h3>
+        <p>Total gasto: <span id="total-gasto">R$ 0,00</span></p>
+        <p>Maior transação: <span id="maior-transacao">R$ 0,00</span></p>
+      </div>
+    </section>
+  </div>
+
+  <!-- JS -->
+  <script type="module" src="../js/main.js"></script>
+  <script type="module" src="../js/chart.js"></script>
+  <script type="module" src="../js/groups.js"></script>
+</body>
+</html>

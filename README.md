@@ -14,8 +14,8 @@
   nome: string,
   descricao: string,
   preco: number,
-  tipo: String,
-  valida: booleano
+  tipo: String, {"Alimentação", "Moradia", "Transporte", "Saúde", "Educação", "Lazer", "Vestuário", "Serviços financeiros", "Doações", "Dívidas", "Outros"}
+  valida: booleano {"Por padrão True, se a transação for deletada, False"}
 }
 ```
 - Estará no Database do Servidor de Sinalização

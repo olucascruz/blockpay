@@ -1,0 +1,126 @@
+/* Fundo da página */
+body {
+    background-color: #121212; /* Fundo escuro */
+    color: lab(95.49% 0.01 -0.01 / 0.856); /* Cor suave para o texto */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  /* Títulos principais */
+  h1, h2 {
+    color: #f8f9fa; /* Cor mais clara para os títulos */
+  }
+  
+  /* Título das transações */
+  h3 {
+    color: #f8f9fa; /* Cor mais visível para o título das transações */
+  }
+  
+  /* Cartões de transações */
+  .card {
+    background-color: #1f2a3c; /* Cor de fundo escura para os cartões */
+    border: none;
+    color: #f1f1f1; /* Texto claro */
+    margin-bottom: 1rem;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.3); /* Sombra mais forte */
+    border-radius: 12px; /* Bordas arredondadas para um visual mais suave */
+    padding: 16px;
+  }
+  
+  /* Título do cartão */
+  .card-title {
+    color: #ffffff; /* Título do cartão em branco */
+    margin-bottom: 10px;
+  }
+  
+  /* Botão de download */
+  .card .btn-primary {
+    background-color: #81c3d7;
+    border-color: #81c3d7;
+    color: #1e3a5f; /* Cor escura para contraste */
+  }
+  
+  .card .btn-primary:hover {
+    background-color: #6db6cc;
+    border-color: #6db6cc;
+  }
+  
+  /* Lista de transações */
+  #transacoes-lista {
+    list-style: none;
+    padding: 0;
+  }
+  
+  /* Estilo para cada item da transação */
+  #transacoes-lista li {
+    background-color: #2e5984; /* Fundo azul suave */
+    border-radius: 10px;
+    padding: 12px;
+    margin: 8px 0;
+    color: #f1f1f1; /* Texto claro */
+  }
+  
+  #transacoes-lista h4 {
+    margin: 0;
+    font-size: 1.2rem; /* Tamanho do título das transações */
+    color: #ffffff; /* Cor clara para o título */
+  }
+  
+  #transacoes-lista p {
+    margin: 5px 0;
+    font-size: 1rem;
+    color: #dcdcdc; /* Cor suave para o texto das transações */
+  }
+  
+  /* Botões gerais */
+  .btn-outline-light,
+  .btn-outline-success {
+    color: #ffffff;
+    border-color: #ffffff;
+  }
+  
+  .btn-outline-light:hover,
+  .btn-outline-success:hover {
+    background-color: #ffffff;
+    color: #1e3a5f;
+  }
+  
+  /* Estilo responsivo para telas menores */
+  @media (max-width: 1000px) {
+    /* Ajustes responsivos para a lista e cartões */
+    .card {
+      padding: 12px;
+      margin: 10px 0;
+    }
+  
+    #transacoes-lista li {
+      padding: 10px;
+    }
+  }
+  
+  /* Estilo para impressão */
+  @media print {
+    body {
+      background-color: hsla(0, 0%, 100%, 0.034);
+      color: #000000;
+    }
+  
+    .navbar, button, .btn {
+      display: none !important;
+    }
+  
+    .card {
+      background-color: #ffffff;
+      color: #000000;
+      border: 1px solid #ccc;
+      page-break-inside: avoid;
+    }
+  
+    .card-title {
+      color: #000000;
+    }
+  
+    .card + .card {
+      margin-top: 20px;
+    }
+  }
+  

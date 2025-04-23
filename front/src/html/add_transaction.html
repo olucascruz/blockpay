@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>BlockPay - Adicionar Transação</title>
+  <!-- Bootstrap CSS -->
+  <link 
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" 
+    rel="stylesheet" 
+    integrity="sha384-BTVnEtGFGXkzpj19CWZHwRH8WrZ6ZyAzcc7ZL3oZ3gL7rkpKoJ6OQO1R98+fDb8+" 
+    crossorigin="anonymous"
+  >
+  <!-- Seu CSS personalizado -->
+  <link rel="stylesheet" href="../css/add_transaction.css">
+</head>
+<body>
+  <script type="module">
+    import { verificarAutenticacao } from "../js/authentication.js";
+    verificarAutenticacao();
+  </script>
+
+  <header class="text-center mb-4">
+    <h1 class="text-light">BlockPay - Adicionar Transação</h1>
+  </header> 
+
+  <section id="adicionar-transacao" class="container">
+    <h2 class="mb-4">Adicionar nova transação</h2>
+    <form id="form-transacao">
+      <div class="mb-3">
+        <label for="nome" class="form-label">Nome:</label>
+        <input type="text" class="form-control" id="nome" name="nome" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="descricao" class="form-label">Descrição:</label>
+        <textarea id="descricao" class="form-control" name="descricao"></textarea>
+      </div>
+
+      <div class="mb-3">
+        <label for="preco" class="form-label">Preço (R$):</label>
+        <input type="number" class="form-control" id="preco" name="preco" step="0.01" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="tipo" class="form-label">Tipo:</label>
+        <select id="tipo" class="form-select" name="tipo" required>
+          <option value="Alimentação">Alimentação</option>
+          <option value="Moradia">Moradia</option>
+          <option value="Transporte">Transporte</option>
+          <option value="Saúde">Saúde</option>
+          <option value="Educação">Educação</option>
+          <option value="Lazer">Lazer</option>
+          <option value="Vestuário">Vestuário</option>
+          <option value="Serviços financeiros">Serviços financeiros</option>
+          <option value="Doações">Doações</option>
+          <option value="Dívidas">Dívidas</option>
+          <option value="Outros">Outros</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label for="data" class="form-label">Data e Hora:</label>
+        <input type="datetime-local" class="form-control" id="data" name="data" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="arquivo" class="form-label">Arquivo ou Foto:</label>
+        <input type="file" class="form-control" id="arquivo" name="arquivo" accept="image/*,application/pdf">
+      </div>
+
+      <button type="submit" class="btn btn-primary">Adicionar</button>
+      <button type="button" class="btn btn-secondary" id="btn-transactions">Voltar</button>
+    </form>
+  </section>
+
+  <!-- Bootstrap Bundle JS (inclui Popper) -->
+  <script 
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" 
+    integrity="sha384-YgyWz7c+XkxzDnpYyB3uhjQ/rtnQoKXxqU4qB6HiV+08xWgUJ7qJq7dMTf4gVJ4x" 
+    crossorigin="anonymous">
+  </script>
+
+  <script type="module" src="../js/main.js"></script>
+</body>
+</html>

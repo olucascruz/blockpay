@@ -1,0 +1,73 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #121212;
+    color: white;
+  }
+  
+  .dashboard-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  
+  header, #grupo-usuario {
+    flex-shrink: 0;
+  }
+  
+  #graficos {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 60% 40%;
+    gap: 10px;
+    padding: 10px;
+    background-color: #121212;
+    box-sizing: border-box;
+  }
+  
+  .grafico-card {
+    background-color: #1f2a3c;
+    border-radius: 16px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .grafico-card canvas {
+    width: 100% !important;
+    height: auto !important;
+    max-height: 100% !important;
+  }
+  
+  #info-extra {
+    background-color: #1f2a3c;
+    border-radius: 16px;
+    padding: 12px;
+    grid-column: span 3;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    font-size: 1.1rem;
+  }
+  
+  /* Responsivo para telas menores */
+  @media (max-width: 1000px) {
+    #graficos {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto;
+      overflow-y: auto;
+    }
+  
+    #info-extra {
+      flex-direction: column;
+      text-align: center;
+      gap: 10px;
+    }
+  }
+  

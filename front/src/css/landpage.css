@@ -1,0 +1,13 @@
+body {
+    background-color: #f8f9fa;
+  }
+  
+  header h1 {
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+  
+  button {
+    min-width: 120px;
+  }
+  

@@ -1,0 +1,74 @@
+/* styles.css */
+
+/* Fundo da página */
+body {
+    background-color: #1e3a5f;
+    color: #f1f1f1;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 2rem;
+  }
+  
+  /* Títulos */
+  h1, h2 {
+    color: #ffffff;
+    margin-bottom: 1rem;
+  }
+  
+  /* Seção principal */
+  #adicionar-transacao {
+    background-color: #2e5984;
+    padding: 2rem;
+    border-radius: 10px;
+    max-width: 600px;
+    margin: 0 auto;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Labels */
+  label {
+    font-weight: bold;
+    display: block;
+    margin-top: 1rem;
+  }
+  
+  /* Inputs, selects e textarea */
+  input[type="text"],
+  input[type="number"],
+  input[type="datetime-local"],
+  input[type="file"],
+  textarea,
+  select {
+    width: 100%;
+    padding: 0.6rem;
+    margin-top: 0.3rem;
+    border: none;
+    border-radius: 6px;
+    background-color: #e4f0fa;
+    color: #1e3a5f;
+  }
+  
+  /* Botões */
+  button {
+    padding: 0.6rem 1.2rem;
+    margin-top: 1rem;
+    margin-right: 0.5rem;
+    background-color: #81c3d7;
+    border: none;
+    border-radius: 6px;
+    color: #1e3a5f;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  button:hover {
+    background-color: #6db6cc;
+  }
+  
+  /* Responsivo */
+  @media (max-width: 768px) {
+    #adicionar-transacao {
+      padding: 1rem;
+    }
+  }
+  

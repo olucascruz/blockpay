@@ -1,0 +1,90 @@
+/* styles.css */
+
+/* Fundo da página */
+body {
+    background-color: #1e3a5f;
+    color: hwb(0 95% 5% / 0.041);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  /* Títulos principais */
+  h1, h2 {
+    color: #1b1717;
+  }
+  
+  /* Título das transações */
+  h3 {
+    color: #f8f9fa; /* ainda claro, mas um tom mais visível sobre o cartão azul claro */
+  }
+  
+  /* Botões */
+  .btn-outline-light,
+  .btn-outline-success {
+    color: #ffffff;
+    border-color: #ffffff;
+  }
+  
+  .btn-outline-light:hover,
+  .btn-outline-success:hover {
+    background-color: #ffffff;
+    color: #1e3a5f;
+  }
+  
+  /* Cartões de transações */
+  .card {
+    background-color: #2e5984;
+    border: none;
+    color: #f1f1f1;
+    margin-bottom: 1rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .card-title {
+    color: #ffffff;
+  }
+  
+  /* Botão de download */
+  .card .btn-primary {
+    background-color: #81c3d7;
+    border-color: #81c3d7;
+    color: #1e3a5f;
+  }
+  
+  .card .btn-primary:hover {
+    background-color: #6db6cc;
+    border-color: #6db6cc;
+  }
+  
+  /* Lista */
+  #transacoes-lista {
+    list-style: none;
+    padding: 0;
+  }
+  
+  /* Estilo para impressão */
+  @media print {
+    body {
+      background-color: #ffffff;
+      color: #000000;
+    }
+  
+    .navbar, button, .btn {
+      display: none !important;
+    }
+  
+    .card {
+      background-color: #ffffff;
+      color: #000000;
+      border: 1px solid #ccc;
+      page-break-inside: avoid;
+    }
+  
+    .card-title {
+      color: #000000;
+    }
+  
+    .card + .card {
+      margin-top: 20px;
+    }
+  }
+  
