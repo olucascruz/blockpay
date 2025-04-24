@@ -19,7 +19,8 @@ class Blockchain:
 
     def insert_block(self, new_block):
         self.chain.append(new_block)
-        self.save_to_file()
+        if self.is_blockchain_valid():
+            self.save_to_file()
 
     def get_last_block(self) -> Block:
         return self.chain[-1]
@@ -89,4 +90,40 @@ class Blockchain:
             new_chain.append(block)
 
         self.chain = new_chain
-        self.save_to_file()
+        if self.is_blockchain_valid():
+            self.save_to_file()
+
+
+    def is_first_block_valid(self):
+        """
+        Verifica se o bloco gênesis é válido
+        """
+        first_block = self.blocks[0]
+        return (first_block.index == 0 and
+                first_block.previous_hash is None and
+                first_block.hash == first_block.calculate_hash())
+    
+    def is_valid_new_block(self, new_block, previous_block):
+        """
+        Valida um novo bloco com base no bloco anterior
+        """
+        return (new_block and previous_block and
+                previous_block.index + 1 == new_block.index and
+                new_block.previous_hash == previous_block.hash and
+                new_block.hash == new_block.calculate_hash())
+    
+    def is_blockchain_valid(self):
+        """
+        Verifica a integridade da blockchain
+        """
+        if not self.is_first_block_valid():
+            return False
+        
+        #//Percorre todos os blocos da blockchain
+        #//verifica cada bloco em relação ao seu antecessor.
+        #//Isso confirma que a blockchain inteira não foi adulterada.
+        for i in range(1, len(self.blocks)):
+            if not self.is_valid_new_block(self.blocks[i], self.blocks[i-1]):
+                return False
+        
+        return True
