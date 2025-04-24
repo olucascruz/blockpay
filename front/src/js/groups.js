@@ -1,24 +1,25 @@
 import { getUsuarioLogado } from "./authentication.js";
 
-const API_URL = "http://localhost:3001/grupos";
+const API_URL = "http://localhost:8000/group";
 
 // Buscar grupo do usuário
 export async function getGrupoDoUsuario(idCriador) {
   try {
-    const res = await fetch(API_URL);
+    const res = await fetch(API_URL+`?user_id=${encodeURIComponent(idCriador)}`);
     if (!res.ok) throw new Error("Erro ao buscar grupos.");
-    const grupos = await res.json();
-    return grupos.find(g => g.participantes.includes(idCriador));
+    const grupo = await res.json();
+    return grupo;
   } catch (error) {
     console.error("Erro ao buscar grupo do usuário:", error);
-    throw error;
+    console.log("Erro ao buscar grupo do usuário:", error);
+
   }
+  return null
 }
 
 // Criar novo grupo
 export async function criarGrupo(idCriador) {
   const novoGrupo = {
-    id: crypto.randomUUID(),
     criador: idCriador,
     participantes: [idCriador]
   };
@@ -34,22 +35,18 @@ export async function criarGrupo(idCriador) {
 
 // Entrar em grupo existente
 export async function entrarNoGrupo(idGrupo, idCriador) {
-  const res = await fetch(API_URL);
-  if (!res.ok) throw new Error("Erro ao buscar grupos.");
-  const grupos = await res.json();
-  const grupo = grupos.find(g => g.id === idGrupo);
+ 
 
-  if (!grupo) throw new Error("Grupo não encontrado.");
-  if (grupo.participantes.includes(idCriador)) throw new Error("Você já está neste grupo.");
-
-  grupo.participantes.push(idCriador);
-
-  const resUpdate = await fetch(`${API_URL}/${grupo.id}`, {
-    method: "PUT",
+  const resUpdate = await fetch(`${API_URL}/enter`, {
+    method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(grupo)
-  });
+    body: JSON.stringify({
+      user_id: idCriador,
+      code_group: idGrupo
+    })
 
+  });
+  console.log(resUpdate.json())
   if (!resUpdate.ok) throw new Error("Erro ao entrar no grupo.");
 }
 
@@ -67,7 +64,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
     const grupo = await getGrupoDoUsuario(usuario.id);
-
     if (grupo && grupo.id) {
       infoGrupo.innerHTML = `
         <p>Você já está em um grupo.</p>

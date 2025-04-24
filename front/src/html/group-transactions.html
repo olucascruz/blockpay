@@ -104,7 +104,8 @@
         for (const idMembro of membros) {
           const transacoes = await getTransacoesPorUsuario(idMembro);
           const user = await getUserById(idMembro);
-          const nomeMembro = user[0].nome;
+          console.log("usuario objeto:",user)
+          const nomeMembro = user.nome;
 
           if (transacoes.length > 0) {
             const tituloMembro = document.createElement("h3");
@@ -219,7 +220,7 @@
         });
 
       } catch (error) {
-        console.error("Erro ao carregar transações do grupo:", error);
+        console.log("error load transactions",error)
         lista.innerHTML = "<li>Erro ao carregar transações. Detalhes: " + error.message + "</li>";
       }
     });

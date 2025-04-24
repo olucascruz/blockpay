@@ -46,6 +46,15 @@ class Blockchain:
             for block in self.chain
         ]
     
+    def get_data_by_type(self, block_type):
+        data = self.get_all_data()
+        result = []
+        for block in data:
+           if block.get("data").get("block_type") == block_type:
+               result.append(block)
+        
+        return result
+
     def save_to_file(self, filename="blockchain.json"):
         data = [
             {

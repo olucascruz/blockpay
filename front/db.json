@@ -29,6 +29,12 @@
       "nome": "julio",
       "email": "julio@gmail.com",
       "senha": "teste"
+    },
+    {
+      "id": "773b",
+      "nome": "novo",
+      "email": "lca.snf21@uea.edu.br",
+      "senha": "senha"
     }
   ],
   "transacoes": [
@@ -95,6 +101,13 @@
       "participantes": [
         "e8a5",
         "31d5"
+      ]
+    },
+    {
+      "id": "d0532c2a-2dca-4eca-adbe-140367e6c740",
+      "criador": "773b",
+      "participantes": [
+        "773b"
       ]
     }
   ]
