@@ -1,103 +1,38 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from pydantic import BaseModel
-import hashlib
-import time
-from typing import List
-import json
-import os
 
-app = FastAPI(title="API de Blockchain para Registro de Pagamentos")
+import socket
+import uvicorn
+import requests
+from fastapi import Body
+from typing import Any
+import random
+from Block import Block
+PORT = 8000
+from Blockchain import Blockchain
 
-# Classe para o Bloco
-class Block:
-    def __init__(self, index: int, timestamp: float, data: dict, previous_hash: str):
-        self.index = index
-        self.timestamp = timestamp
-        self.data = data
-        self.previous_hash = previous_hash
-        self.nonce = 0
-        self.hash = self.calculate_hash()
-
-    def calculate_hash(self) -> str:
-        raw = f"{self.index}{self.timestamp}{self.data}{self.previous_hash}{self.nonce}"
-        return hashlib.sha256(raw.encode()).hexdigest()
-
-    def mine_block(self, difficulty: int):
-        prefix = "0" * difficulty
-        while not self.hash.startswith(prefix):
-            self.nonce += 1
-            self.hash = self.calculate_hash()
-
-# Classe para a Blockchain
-class Blockchain:
-    def __init__(self, difficulty: int = 2):
-        self.chain: List[Block] = []
-        self.difficulty = difficulty
-        self.load_from_file()
-        if not self.chain:
-            self.create_genesis_block()
-
-    def create_genesis_block(self):
-        genesis = Block(0, time.time(), {"mensagem": "Bloco Gênesis"}, "0")
-        genesis.mine_block(self.difficulty)
-        self.chain.append(genesis)
-
-    def get_last_block(self) -> Block:
-        return self.chain[-1]
-
-    def add_block(self, data: dict):
-        last_block = self.get_last_block()
-        new_block = Block(len(self.chain), time.time(), data, last_block.hash)
-        new_block.mine_block(self.difficulty)
-        self.chain.append(new_block)
-        self.save_to_file()
-
-    def get_all_data(self):
-        return [
-            {
-                "index": block.index,
-                "timestamp": block.timestamp,
-                "data": block.data,
-                "hash": block.hash,
-                "previous_hash": block.previous_hash
-            }
-            for block in self.chain
-        ]
-    
-    def save_to_file(self, filename="blockchain.json"):
-        data = [
-            {
-                "index": block.index,
-                "timestamp": block.timestamp,
-                "data": block.data,
-                "previous_hash": block.previous_hash,
-                "hash": block.hash,
-                "nonce": block.nonce
-            }
-            for block in self.chain
-        ]
-        with open(filename, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=4)
-
-    def load_from_file(self, filename="blockchain.json"):
-        if os.path.exists(filename):
-            with open(filename, "r", encoding="utf-8") as f:
-                data = json.load(f)
-                self.chain = []
-                for entry in data:
-                    block = Block(
-                        index=entry["index"],
-                        timestamp=entry["timestamp"],
-                        data=entry["data"],
-                        previous_hash=entry["previous_hash"]
-                    )
-                    block.hash = entry["hash"]
-                    block.nonce = entry["nonce"]
-                    self.chain.append(block)
-
-
+SERVER_AUX = "http://192.168.1.10:8001"
 # Inicializa a blockchain
 blockchain = Blockchain()
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Start app
+    ip = get_local_ip()
+    server_with_port = f"http://{ip}:{PORT}"
+    response = requests.post(f"{SERVER_AUX}/ip", json={"ip":server_with_port})
+    response = requests.get(f"{SERVER_AUX}/ip")
+    list_ips = response.json()["ips"]
+
+    chain = sync_from_random_peer(list_ips)
+    if chain != None:
+        blockchain.import_chain(chain)
+    yield
+    # Finish app
+    
+app = FastAPI(lifespan=lifespan, title="API de Blockchain para Registro de Pagamentos")
 
 # Modelo dos dados de pagamento
 class Pagamento(BaseModel):
@@ -108,8 +43,31 @@ class Pagamento(BaseModel):
 # Rota de registro
 @app.post("/registrar_pagamento")
 def registrar_pagamento(pagamento: Pagamento):
-    blockchain.add_block(pagamento.dict())
+    new_block = blockchain.create_block(pagamento.dict())
+    blockchain.insert_block(new_block)
+    response = requests.get(f"{SERVER_AUX}/ip")
+    list_ips = response.json()["ips"]
+    for ip in list_ips:
+        if get_local_ip() not in ip:
+            try:
+                response = requests.post(f"{ip}/atualizar_pagamento", json=new_block.get_data())
+            except Exception as ex:
+                print(ex)
     return {"mensagem": "Pagamento registrado com sucesso!"}
+
+
+class BlockModel(BaseModel):
+    index: int
+    timestamp: str
+    data: Any
+    hash: str
+    previous_hash: str
+
+@app.post("/atualizar_pagamento")
+def atualizar_pagamento(new_block: dict= Body(...)):
+      new_block = Block(**new_block)
+      blockchain.insert_block(new_block)
+      return {"mensagem": "Pagamento registrado com sucesso!"}
 
 # Rota para listar
 @app.get("/listar_pagamentos")
@@ -130,3 +88,39 @@ def buscar_pagamentos(pagante: str):
                 "hash": block.hash
             })
     return {"pagamentos_do_pagante": resultados}
+
+
+@app.get("/export")
+def export_blockchain_data():
+    return blockchain.get_all_data()
+
+def get_local_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect(('8.8.8.8', 80))
+        ip = s.getsockname()[0]
+    finally:
+        s.close()
+    return ip
+
+def sync_from_random_peer(peers: list) -> list | None:
+    random.shuffle(peers)
+    for peer in peers:
+        if get_local_ip() in peer: continue
+        try:
+            response = requests.get(f"{peer}/export")
+            if response.status_code == 200:
+                chain_data = response.json()
+                return chain_data
+        except:
+            continue
+    return None
+
+@app.get("/hello")
+def hello():
+    return {"hello":"hello"}     
+
+
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=PORT)
