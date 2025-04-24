@@ -1,16 +1,19 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from pydantic import BaseModel
-
+from uuid import UUID
+from datetime import datetime
 import socket
 import uvicorn
 import requests
 from fastapi import Body
-from typing import Any
+from typing import Any, Optional
 import random
 from Block import Block
-PORT = 8000
 from Blockchain import Blockchain
+from fastapi.middleware.cors import CORSMiddleware
+
+PORT = 8000
 
 SERVER_AUX = "http://192.168.1.10:8001"
 # Inicializa a blockchain
@@ -19,31 +22,49 @@ blockchain = Blockchain()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Start app
-    ip = get_local_ip()
-    server_with_port = f"http://{ip}:{PORT}"
-    response = requests.post(f"{SERVER_AUX}/ip", json={"ip":server_with_port})
-    response = requests.get(f"{SERVER_AUX}/ip")
-    list_ips = response.json()["ips"]
+    # # Start app
+    # ip = get_local_ip()
+    # server_with_port = f"http://{ip}:{PORT}"
+    # response = requests.post(f"{SERVER_AUX}/ip", json={"ip":server_with_port})
+    # response = requests.get(f"{SERVER_AUX}/ip")
+    # list_ips = response.json()["ips"]
 
-    chain = sync_from_random_peer(list_ips)
-    if chain != None:
-        blockchain.import_chain(chain)
+    # chain = sync_from_random_peer(list_ips)
+    # if chain != None:
+    #     blockchain.import_chain(chain)
     yield
     # Finish app
     
 app = FastAPI(lifespan=lifespan, title="API de Blockchain para Registro de Pagamentos")
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # Modelo dos dados de pagamento
 class Pagamento(BaseModel):
+    id: UUID
+    id_usuario: str
+    nome: str
     descricao: str
     preco: float
-    pagante: str
+    tipo: str
+    data: datetime
+    base64: Optional[str] = None
+    valida: bool
 
 # Rota de registro
 @app.post("/registrar_pagamento")
 def registrar_pagamento(pagamento: Pagamento):
-    new_block = blockchain.create_block(pagamento.dict())
+    pagamento = pagamento.model_dump()
+    pagamento["id"] = str(pagamento["id"])
+    pagamento["data"] = str(pagamento["data"])
+    pagamento["block_type"] = "transaction"
+    new_block = blockchain.create_block(pagamento)
     blockchain.insert_block(new_block)
     response = requests.get(f"{SERVER_AUX}/ip")
     list_ips = response.json()["ips"]
